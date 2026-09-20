@@ -139,10 +139,18 @@ input.box{width:100%;padding:11px 12px;font-size:13px;border:1px solid var(--lin
   aside{position:fixed;inset:auto 0 0 0;top:auto;height:78vh;width:100%;border-left:none;border-top:1px solid var(--line);
     border-radius:18px 18px 0 0;box-shadow:0 -12px 40px rgba(26,34,48,.18);transform:translateY(101%);transition:transform .24s ease;z-index:70}
   aside.open{transform:translateY(0)}
-  .grip{display:block;text-align:center;padding:8px 0 0}
+  .grip{display:flex;align-items:center;justify-content:center;position:relative;padding:13px 0 9px;touch-action:none}
+  .grip .bar{width:46px;height:5px;border-radius:999px;background:rgba(26,34,48,.22)}
+  .grip button{position:absolute;right:9px;top:6px;width:42px;height:42px;border-radius:50%;
+    background:var(--wash);border:none;font-size:17px;line-height:1;color:var(--ink);cursor:pointer;
+    display:flex;align-items:center;justify-content:center}
+  #backdrop{position:fixed;inset:0;background:rgba(26,34,48,.4);opacity:0;pointer-events:none;
+    transition:opacity .24s ease;z-index:65}
+  body.pan #backdrop{opacity:1;pointer-events:auto}
 }
 .grip{display:none}
-.grip button{background:none;border:none;color:var(--mute);font-size:12px;cursor:pointer;padding:4px 12px}
+#backdrop{display:none}
+@media(max-width:900px){ #backdrop{display:block} }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -191,8 +199,13 @@ input.box{width:100%;padding:11px 12px;font-size:13px;border:1px solid var(--lin
     </div>
   </article>
 
+  <div id="backdrop" onclick="closePanel()"></div>
+
   <aside id="panel">
-    <div class="grip"><button onclick="closePanel()">Thu gọn ▾</button></div>
+    <div class="grip" id="grip">
+      <div class="bar"></div>
+      <button onclick="closePanel()" aria-label="Đóng bảng">✕</button>
+    </div>
     <div class="tabs">
       <button class="tab on" data-t="word" onclick="setTab('word')">Từ</button>
       <button class="tab" data-t="sent" onclick="setTab('sent')">Câu</button>
@@ -702,8 +715,34 @@ function setTab(t){
   el(t==='word'?'paneWord':t==='sent'?'paneSent':'paneBook').classList.remove('hide');
   if(t==='book') drawBook();
 }
-function openPanel(){ el('panel').classList.add('open'); }
-function closePanel(){ el('panel').classList.remove('open'); }
+function openPanel(){ el('panel').classList.add('open'); document.body.classList.add('pan'); }
+function closePanel(){
+  const p=el('panel');
+  p.style.transform=''; p.style.transition='';
+  p.classList.remove('open'); document.body.classList.remove('pan');
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePanel(); });
+
+/* vuốt xuống để đóng bảng tra từ */
+(function(){
+  let y0=null, dy=0;
+  const g=()=>el('grip'), p=()=>el('panel');
+  document.addEventListener('touchstart',e=>{
+    const grip=g(); if(!grip||!grip.contains(e.target)) return;
+    y0=e.touches[0].clientY; dy=0; p().style.transition='none';
+  },{passive:true});
+  document.addEventListener('touchmove',e=>{
+    if(y0===null) return;
+    dy=e.touches[0].clientY-y0;
+    if(dy>0) p().style.transform='translateY('+dy+'px)';
+  },{passive:true});
+  document.addEventListener('touchend',()=>{
+    if(y0===null) return;
+    const pn=p(); pn.style.transition='';
+    if(dy>90) closePanel(); else pn.style.transform='';
+    y0=null; dy=0;
+  });
+})();
 const spinner='<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
 
 let ACT=null;        /* {word, sent} */
