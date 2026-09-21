@@ -132,6 +132,10 @@ input.box{width:100%;padding:11px 12px;font-size:13px;border:1px solid var(--lin
 .strip button{background:none;border:1px solid rgba(26,34,48,.25);border-radius:999px;font-size:12px;padding:4px 11px;cursor:pointer;color:inherit}
 .hide{display:none!important}
 
+/* mặc định: máy tính — bảng nằm cố định bên phải nên không cần tay cầm */
+.grip{display:none}
+#backdrop{display:none}
+
 @media(max-width:900px){
   .wrap{grid-template-columns:1fr}
   article{padding:22px 18px 90px}
@@ -148,9 +152,6 @@ input.box{width:100%;padding:11px 12px;font-size:13px;border:1px solid var(--lin
     transition:opacity .24s ease;z-index:65}
   body.pan #backdrop{opacity:1;pointer-events:auto}
 }
-.grip{display:none}
-#backdrop{display:none}
-@media(max-width:900px){ #backdrop{display:block} }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
