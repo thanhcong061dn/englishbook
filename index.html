@@ -168,7 +168,6 @@ input.box{width:100%;padding:11px 12px;font-size:13px;border:1px solid var(--lin
     <button class="btn tiny hide" id="btnGoMark" onclick="goMark()">⤴ Dấu trang</button>
     <button class="btn tiny" onclick="putMark()">🔖 Đánh dấu</button>
     <button class="btn tiny" id="btnVi" onclick="toggleVi()">VI</button>
-    <button class="btn tiny" onclick="openSheet('backup')">💾</button>
     <button class="btn tiny" onclick="openSheet('key')">⚙︎</button>
     <button class="btn tiny" onclick="setSize(-1)">A−</button>
     <button class="btn tiny" onclick="setSize(1)">A+</button>
@@ -1007,7 +1006,7 @@ function drawBook(){
   let h='<div class="warn'+(STORE_OK?' ok':'')+'">'+
     (STORE_OK
       ? 'Trình duyệt này lưu được dữ liệu. Sổ tay, chỗ tô sáng và dấu trang sẽ còn lại lần sau.'
-      : 'Trình duyệt đang ở chế độ riêng tư nên không lưu được. Dùng nút 💾 để chép mã sao lưu.')+
+      : 'Trình duyệt đang ở chế độ riêng tư nên không lưu được. Mở thanh báo phía trên để chép mã sao lưu.')+
     '<div style="margin-top:6px">'+WORDS.length+' từ · '+SENTS.length+' câu · '+hlCount+' chỗ tô sáng</div></div>';
 
   h+='<div class="sec">Từ đã lưu</div>';
